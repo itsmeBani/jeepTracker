@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import Map, { Marker, NavigationControl, Popup } from 'react-map-gl';
 import maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
@@ -11,15 +11,36 @@ function App() {
         latitude: 16.899876727154616,
     });
     const [error, setError] = useState(null);
+    const [viewState, setViewState] = useState({
+        longitude: 120.51759851277455,
+        latitude: 16.899876727154616,
+        zoom: 18,
+        pitch: 60,
+        bearing: 130.6,
+    });
+    const goToMarkerLocation = () => {
+        setLocation({
+            longitude: 120.51759851277455,
+            latitude: 16.899876727154616,
+        });
+        setShowPopup(false); // Close the popup after navigating
+    };
+
+
 
     useEffect(() => {
         if (navigator.geolocation) {
             const watchId = navigator.geolocation.watchPosition(
                 (position) => {
-                    setLocation({
+                    const newLocation = {
                         longitude: position.coords.longitude,
                         latitude: position.coords.latitude,
-                    });
+                    };
+                        setLocation(newLocation);
+                    setViewState((prevState) => ({
+                        ...prevState,
+                        ...newLocation,
+                    }));
                 },
                 (err) => {
                     setError(err.message);
@@ -41,26 +62,20 @@ function App() {
         <div className="w-full">
             <Map
                 mapLib={maplibregl}
-                initialViewState={{
-                    longitude: location.longitude,
-                    latitude: location.latitude,
-                    zoom: 18,
-                    pitch: 60, // Adjust the pitch to tilt the map
-                    bearing: 130.6, // Adjust the bearing to rotate the map
-                }}
+                {...viewState}
+                onMove={(evt) => setViewState(evt.viewState)}
                 style={{ width: '100%', height: '80vh' }}
                 mapStyle="https://api.maptiler.com/maps/streets/style.json?key=3rAPapsQl0WHV7XcyCSi"
             >
                 <NavigationControl position="top-left" />
 
-                <div onClick={() => setShowPopup(true)}>
-                    <Marker
-                        longitude={location.longitude}
-                        latitude={location.latitude}
-                        anchor="bottom"
-                        color="red"
-                    />
-                </div>
+                <Marker
+                    longitude={location.longitude}
+                    latitude={location.latitude}
+                    anchor="bottom"
+                    color="red"
+                    onClick={() => setShowPopup(true)}
+                />
 
                 {showPopup && (
                     <Popup
@@ -77,6 +92,20 @@ function App() {
                     <div className="error">
                         <p>{error}</p>
                     </div>
+                )}
+
+                {showPopup && (
+                    <Popup
+                        longitude={location.longitude}
+                        latitude={location.latitude}
+                        anchor="bottom"
+                        onClose={() => setShowPopup(false)}
+                    >
+                        <div>
+                            <p>You are here</p>
+                            <button onClick={goToMarkerLocation}>Go to Marker Location</button>
+                        </div>
+                    </Popup>
                 )}
             </Map>
         </div>
