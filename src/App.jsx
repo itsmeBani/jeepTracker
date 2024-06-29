@@ -37,10 +37,7 @@ function App() {
                         latitude: position.coords.latitude,
                     };
                         setLocation(newLocation);
-                    setViewState((prevState) => ({
-                        ...prevState,
-                        ...newLocation,
-                    }));
+
                 },
                 (err) => {
                     setError(err.message);
