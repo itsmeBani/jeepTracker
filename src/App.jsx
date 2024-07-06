@@ -3,7 +3,7 @@ import Map, { FullscreenControl, Marker, NavigationControl, Popup, GeolocateCont
 import maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import './App.css';
-
+import  jeep  from './assets/truck-front.svg'
 function App() {
     const [popupInfo, setPopupInfo] = useState(null);
     const [location, setLocation] = useState({
@@ -19,10 +19,10 @@ function App() {
         bearing: 130.6,
     });
 
-    const goToMarkerLocation = () => {
+    const goToMarkerLocation = (longitude,latitude) => {
         setPopupInfo({
-            lng: location.longitude,
-            lat: location.latitude,
+            lng:longitude,
+            lat: latitude,
             description: 'Passenger: 18 Geolocation is not supported by this browserGeolocation is not supported by this browser'
         });
     };
@@ -83,18 +83,19 @@ function App() {
                 mapLib={maplibregl}
                 {...viewState}
                 onMove={(evt) => setViewState(evt.viewState)}
-                style={{ width: '100%', height: '80vh' }}
+                style={{ width: '100%', height: '100vh' }}
                 mapStyle="https://api.maptiler.com/maps/streets/style.json?key=3rAPapsQl0WHV7XcyCSi" // Replace with your actual MapTiler API key
             >
                 <NavigationControl position="top-left" />
                 <GeolocateControl position="top-left" trackUserLocation />
                 <FullscreenControl position="top-left" />
 
-                <Source id="route" type="geojson" data={geojson}>
+                <Source id="route" type="geojson" data={geojson}  >
                     <Layer
                         id="route"
                         type="line"
                         source="route"
+
                         layout={{
                             'line-join': 'round',
                             'line-cap': 'round'
@@ -103,6 +104,8 @@ function App() {
                             'line-color': '#f56a6a',
                             'line-width': 7
                         }}
+
+
                     />
                 </Source>
 
@@ -111,7 +114,7 @@ function App() {
                     latitude={location.latitude}
                     anchor="bottom"
                     color="red"
-                    onClick={goToMarkerLocation}
+                    onClick={()=>{goToMarkerLocation(location?.longitude,location?.latitude)}}
                 >
                     <div className="flex items-center justify-center w-10 h-10 bg-blue-500 rounded-full">
                         <img
@@ -131,12 +134,14 @@ function App() {
                     </div>
                 </Marker>
 
-                <Marker longitude={endPoint[0]} latitude={endPoint[1]} anchor="bottom">
-                    <div className="flex items-center justify-center w-10 h-10 bg-green-500 rounded-full">
-                        <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 2C8.134 2 5 5.134 5 9c0 2.235 1.2 5.355 3.073 8.349.58.948 1.209 1.862 1.877 2.733a18.973 18.973 0 003.1-2.732C17.8 14.355 19 11.235 19 9c0-3.866-3.134-7-7-7z" />
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 11c1.104 0 2-.896 2-2s-.896-2-2-2-2 .896-2 2 .896 2 2 2z" />
-                        </svg>
+                <Marker longitude={endPoint[0]} latitude={endPoint[1]} anchor="bottom"   onClick={
+                    ()=>{
+                        goToMarkerLocation(endPoint[0],endPoint[1])
+
+                    }}>
+                    <div className="flex  items-center justify-center w-9 h-9 p-2   rounded-full">
+                        <img src={jeep} className=""/>
+
                     </div>
                 </Marker>
 
@@ -148,12 +153,24 @@ function App() {
                         closeOnClick={false}
                         onClose={() => setPopupInfo(null)}
                     >
-                        <div className="relative p-2 bg-white rounded shadow-lg">
-                            <button className="absolute top-0 right-0 m-1 text-gray-500" onClick={() => setPopupInfo(null)}>x</button>
+
                             <div>{popupInfo.description}</div>
-                        </div>
+
                     </Popup>
                 )}
+                <div className="absolute z-[10000] bottom-0 gap-2 flex justify-between w-full p-2 px-10">
+                   <div className="w-full bg-white h-28 rounded-lg flex place-items-center px-5">
+                       <img src={jeep} className="h-20  w-10 opacity-80"/>
+
+                   </div>
+                    <div className="w-full bg-white h-28 rounded-lg flex place-items-center px-5">
+                        <img src={jeep} className="h-20  w-10 opacity-80"/>
+
+                    </div> <div className="w-full bg-white h-28 rounded-lg flex place-items-center px-5">
+                    <img src={jeep} className="h-20  w-10 opacity-80"/>
+
+                </div>
+                </div>
             </Map>
         </div>
     );
