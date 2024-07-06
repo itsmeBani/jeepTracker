@@ -14,7 +14,7 @@ function App() {
     const [viewState, setViewState] = useState({
         longitude: 120.51759851277455,
         latitude: 16.899876727154616,
-        zoom: 18,
+        zoom: 17,
         pitch: 60,
         bearing: 130.6,
     });
@@ -83,7 +83,7 @@ function App() {
                 mapLib={maplibregl}
                 {...viewState}
                 onMove={(evt) => setViewState(evt.viewState)}
-                style={{ width: '100%', height: '100vh' }}
+                style={{ width: '100%', height: '100dvh' }}
                 mapStyle="https://api.maptiler.com/maps/streets/style.json?key=3rAPapsQl0WHV7XcyCSi" // Replace with your actual MapTiler API key
             >
                 <NavigationControl position="top-left" />
@@ -125,14 +125,7 @@ function App() {
                     </div>
                 </Marker>
 
-                <Marker longitude={120.51759851277455} latitude={16.899876727154616} anchor="bottom">
-                    <div className="flex items-center justify-center w-10 h-10 bg-red-500 rounded-full">
-                        <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 2C8.134 2 5 5.134 5 9c0 2.235 1.2 5.355 3.073 8.349.58.948 1.209 1.862 1.877 2.733a18.973 18.973 0 003.1-2.732C17.8 14.355 19 11.235 19 9c0-3.866-3.134-7-7-7z" />
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 11c1.104 0 2-.896 2-2s-.896-2-2-2-2 .896-2 2 .896 2 2 2z" />
-                        </svg>
-                    </div>
-                </Marker>
+
 
                 <Marker longitude={endPoint[0]} latitude={endPoint[1]} anchor="bottom"   onClick={
                     ()=>{
@@ -158,16 +151,16 @@ function App() {
 
                     </Popup>
                 )}
-                <div className="absolute z-[10000] bottom-0 gap-2 flex justify-between w-full p-2 px-10">
-                   <div className="w-full bg-white h-28 rounded-lg flex place-items-center px-5">
-                       <img src={jeep} className="h-20  w-10 opacity-80"/>
+                <div className="absolute h-auto rounded-t-[1.5rem] bg-white z-[10000] bottom-0 gap-2 flex flex-col w-full p-2 px-2">
+                   <div className="w-full bg-white shadow-sm h-auto rounded-lg p-5 flex place-items-center px-5">
+                       <img src={jeep} className="h-7  w-7 opacity-80"/>
 
                    </div>
-                    <div className="w-full bg-white h-28 rounded-lg flex place-items-center px-5">
-                        <img src={jeep} className="h-20  w-10 opacity-80"/>
+                    <div className="w-full bg-white shadow-sm h-auto rounded-lg p-5 flex place-items-center px-5">
+                        <img src={jeep} className="h-7  w-7 opacity-80"/>
 
-                    </div> <div className="w-full bg-white h-28 rounded-lg flex place-items-center px-5">
-                    <img src={jeep} className="h-20  w-10 opacity-80"/>
+                    </div>  <div className="w-full bg-white shadow-sm h-auto rounded-lg p-5 flex place-items-center px-5">
+                    <img src={jeep} className="h-7  w-7 opacity-80"/>
 
                 </div>
                 </div>
