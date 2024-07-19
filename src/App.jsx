@@ -94,7 +94,7 @@ export default function App() {
     return (
    <div className="flex">
        <MapContainer center={[16.899876727154616, 120.51759851277455
-       ]} zoom={18} className="w-full h-screen"
+       ]} zoom={18} className="w-full h-[100dvh]"
 
 
        >
@@ -162,6 +162,8 @@ export default function App() {
            </MarkerClusterGroup>
 
 
+
+
            <div className="absolute h-auto rounded-t-[1.5rem] bg-white z-[10000] bottom-0 gap-2 flex flex-col w-full p-2 px-2">
                <GotoJeeplocation coordinates={[16.899876727154616, 120.51759851277455]} />
                <GotoJeeplocation coordinates={[16.899876727154616, 120.51759851277455]} />
@@ -169,8 +171,6 @@ export default function App() {
 
 
            </div>
-
-
 
        </MapContainer>
 
