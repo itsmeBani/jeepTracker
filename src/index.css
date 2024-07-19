@@ -1,3 +1,31 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+.cluster-icon {
+    background-color: #5384fe;
+    height: 2em;
+    width: 2em;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    font-size: 1.2rem;
+    box-shadow: 0 0 0px 5px #fff;
+}
+.leaflet-popup-content-wrapper {
+    border-radius: 8px;
+}
+.leaflet-touch .leaflet-control-layers-toggle{
+    width: 30px;
+    height: 30px;
+
+}
+.leaflet-touch .leaflet-control-layers, .leaflet-touch .leaflet-bar{
+
+    background: white;
+    padding: 10px;
+}
+.glowing-route {
+    filter: drop-shadow(0 0 5px #bacdff);
+}

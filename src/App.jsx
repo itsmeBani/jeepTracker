@@ -1,172 +1,179 @@
-import React, { useState, useEffect } from 'react';
-import Map, { FullscreenControl, Marker, NavigationControl, Popup, GeolocateControl, Source, Layer } from 'react-map-gl';
-import maplibregl from 'maplibre-gl';
-import 'maplibre-gl/dist/maplibre-gl.css';
-import './App.css';
-import  jeep  from './assets/truck-front.svg'
-function App() {
-    const [popupInfo, setPopupInfo] = useState(null);
-    const [location, setLocation] = useState({
-        longitude: 120.51759851277455,
-        latitude: 16.899876727154616,
-    });
-    const [error, setError] = useState(null);
-    const [viewState, setViewState] = useState({
-        longitude: 120.51759851277455,
-        latitude: 16.899876727154616,
-        zoom: 17,
-        pitch: 60,
-        bearing: 130.6,
-    });
+import "leaflet/dist/leaflet.css";
+import {MapContainer, TileLayer, Marker, Popup, Polyline,useMapEvents , useMap,LayersControl} from "react-leaflet";
+import MarkerClusterGroup from "react-leaflet-cluster";
 
-    const goToMarkerLocation = (longitude,latitude) => {
-        setPopupInfo({
-            lng:longitude,
-            lat: latitude,
-            description: 'Passenger: 18 Geolocation is not supported by this browserGeolocation is not supported by this browser'
-        });
+import {Icon, divIcon, point} from "leaflet";
+import RoutingMachine from "./Components/Routing.jsx";
+import jeep1 from "../src/assets/449809310_443755698627655_2173414877061037872_n.jpg"
+import jeep from "../src/assets/truck-front.svg"
+import {useEffect, useRef, useState} from "react";
+import L from "leaflet";
+// create custom icon
+const customIcon = new Icon({
+    iconUrl: "https://scontent.fcrk2-2.fna.fbcdn.net/v/t1.30497-1/143086968_2856368904622192_1959732218791162458_n.png?_nc_cat=1&ccb=1-7&_nc_sid=b224c7&_nc_eui2=AeEI643PBX48OjXz_zRlWsFZso2H55p0AlGyjYfnmnQCUYt1RIFnFnw0X4YmxWjrLkNhvxtdSIVre3vbOT8ZaddB&_nc_ohc=yRzq9EMlBT0Q7kNvgEiWT8A&_nc_ht=scontent.fcrk2-2.fna&oh=00_AYCZOvpE76KcgzxzrScGjXCmYNOuuGuDw4pSjHg1KrFZbQ&oe=66AB69B8",
+    className:"rounded-full border-4 border-blue-700",
+    iconSize: [38, 38] // size of the icon
+});
+
+// custom cluster icon
+const createClusterCustomIcon = function (cluster) {
+    return new divIcon({
+        html: `<span class="cluster-icon">${cluster.getChildCount()}</span>`,
+        className: "",
+        iconSize: point(44, 44, true)
+    });
+};
+
+// markers
+const markers = [
+    {
+        geocode: [16.902086350083458, 120.51778658331939],
+        popUp: "Hello, I am pop up 1"
+    },
+    {
+        geocode: [16.899435389947758, 120.51760679616561],
+        popUp: "Hello, I am pop up 2"
+    },
+    {
+        geocode: [16.899511098191375, 120.51790988579272],
+        popUp: "Hello, I am pop up 3"
+    }
+];
+const positions = [[51.505, -0.09], [51.51, -0.1], [51.515, -0.11]];
+export default function App() {
+
+
+
+
+    const GotoJeeplocation = ({ coordinates }) => {
+        const map = useMap();
+
+        const flyToLocation = () => {
+            map.flyTo(coordinates, 18); // Adjust the zoom level as needed
+        };
+
+        return (
+            <div className="w-full bg-white shadow-sm h-auto rounded-lg p-5 flex place-items-center px-5" onClick={flyToLocation}>
+                <img src={jeep} className="h-7  w-7 opacity-80" alt=""/>
+
+            </div>
+        );
     };
 
-    useEffect(() => {
-        if (navigator.geolocation) {
-            const watchId = navigator.geolocation.watchPosition(
-                (position) => {
-                    const newLocation = {
-                        longitude: position.coords.longitude,
-                        latitude: position.coords.latitude,
-                    };
-                    setLocation(newLocation);
-                },
-                (err) => {
-                    setError(err.message);
-                },
-                {
-                    enableHighAccuracy: true,
-                    timeout: 5000,
-                    maximumAge: 0,
-                }
-            );
 
-            return () => navigator.geolocation.clearWatch(watchId);
-        } else {
-            setError('Geolocation is not supported by this browser.');
-        }
-    }, []);
+    function LocationMarker() {
+        const [position, setPosition] = useState(null);
+        const [bbox, setBbox] = useState([]);
+        const map = useMap();
 
-    const geojson = {
-        "type": "FeatureCollection",
-        "features": [{
-            "type": "Feature",
-            "geometry": {
-                "type": "LineString",
-                "coordinates": [
-                    [120.51889173862918, 16.89851127413688],
-                    [120.51725063934344, 16.89978801631753],
-                    [120.5161804567876, 16.900644693245653],
-                    [120.51616076801133, 16.900601422427243],
-                    [120.51616418677247, 16.900598151321503],
-                    [120.51610264909499, 16.90070609777294],
-                    [120.51611290537454, 16.900984141378302],
-                    [120.51631461220688, 16.901602378043137]
-                ]
-            },
-            "id": "e76271dc-c912-4d1a-8eac-8bcfe441a172",
-            "properties": {}
-        }]
-    };
+        useEffect(() => {
 
-    const endPoint = geojson.features[0].geometry.coordinates[geojson.features[0].geometry.coordinates.length - 1];
+            map.locate().on("locationfound", function (e) {
+                setPosition(e.latlng);
+                console.log(e.latlng)
+                // map.flyTo(e.latlng, map.getZoom());
+                const radius = e.accuracy;
+
+            });
+        }, [map]);
+
+        return position === null ? null : (
+            <Marker position={position} icon={customIcon}>
+                <Popup>
+                    You are here. <br />
+                    Map bbox: <br />
+                    <b>Southwest lng</b>: {bbox[0]} <br />
+                    <b>Southwest lat</b>: {bbox[1]} <br />
+                    <b>Northeast lng</b>: {bbox[2]} <br />
+                    <b>Northeast lat</b>: {bbox[3]}
+                </Popup>
+            </Marker>
+        );
+    }
 
     return (
-        <div className="w-full">
-            <Map
-                mapLib={maplibregl}
-                {...viewState}
-                onMove={(evt) => setViewState(evt.viewState)}
-                style={{ width: '100%', height: '100dvh' }}
-                mapStyle="https://api.maptiler.com/maps/streets/style.json?key=3rAPapsQl0WHV7XcyCSi" // Replace with your actual MapTiler API key
-            >
-                <NavigationControl position="top-left" />
-                <GeolocateControl position="top-left" trackUserLocation />
-                <FullscreenControl position="top-left" />
-
-                <Source id="route" type="geojson" data={geojson}  >
-                    <Layer
-                        id="route"
-                        type="line"
-                        source="route"
-
-                        layout={{
-                            'line-join': 'round',
-                            'line-cap': 'round'
-                        }}
-                        paint={{
-                            'line-color': '#f56a6a',
-                            'line-width': 7
-                        }}
+   <div className="flex">
+       <MapContainer center={[16.899876727154616, 120.51759851277455
+       ]} zoom={18} className="w-full h-screen"
 
 
-                    />
-                </Source>
+       >
+           {/* OPEN STREEN MAPS TILES */}
+           <LayersControl position="topleft">
+               <LayersControl.BaseLayer checked name="Google Maps">
+                   <TileLayer
+                       attribution="Google Maps"
+                       url="http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}"
+                       maxZoom={20}
+                       subdomains={["mt0", "mt1", "mt2", "mt3"]}
+                   />
+               </LayersControl.BaseLayer>
+               <LayersControl.BaseLayer checked name="Satellite">
+                   <TileLayer
+                       attribution="Satellite   "
+                       url="http://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}"
+                       maxZoom={20}
+                       subdomains={["mt0", "mt1", "mt2", "mt3"]}
+                   />
+               </LayersControl.BaseLayer>
+               {/* Add more layers here as needed */}
+           </LayersControl>
 
-                <Marker
-                    longitude={location.longitude}
-                    latitude={location.latitude}
-                    anchor="bottom"
-                    color="red"
-                    onClick={()=>{goToMarkerLocation(location?.longitude,location?.latitude)}}
-                >
-                    <div className="flex items-center justify-center w-10 h-10 bg-blue-500 rounded-full">
-                        <img
-                            className="h-7 rounded-full hover:cursor-pointer"
-                            src="https://scontent.fcrk2-2.fna.fbcdn.net/v/t1.30497-1/143086968_2856368904622192_1959732218791162458_n.png?_nc_cat=1&ccb=1-7&_nc_sid=b224c7&_nc_eui2=AeEI643PBX48OjXz_zRlWsFZso2H55p0AlGyjYfnmnQCUYt1RIFnFnw0X4YmxWjrLkNhvxtdSIVre3vbOT8ZaddB&_nc_ohc=yRzq9EMlBT0Q7kNvgEiWT8A&_nc_ht=scontent.fcrk2-2.fna&oh=00_AYCZOvpE76KcgzxzrScGjXCmYNOuuGuDw4pSjHg1KrFZbQ&oe=66AB69B8"
-                            alt="Marker Icon"
-                        />
-                    </div>
-                </Marker>
+           <TileLayer
+               attribution="Google Maps"
+               // url="http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}" // regular
+
+               url="http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}"
+               // url="http://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}" // satellite
+               //  url="http://{s}.google.com/vt/lyrs=p&x={x}&y={y}&z={z}" // terrain
+               maxZoom={20}
+
+               subdomains={["mt0", "mt1", "mt2", "mt3"]}
+           />
+
+           <MarkerClusterGroup
+
+               chunkedLoading
+               iconCreateFunction={createClusterCustomIcon}
+           >
+               {/* Mapping through the markers */}
+               {markers.map((marker, index) => (
+                   <Marker key={index} position={marker.geocode} icon={customIcon}>
+                       <Popup >
+                           <div className="w-[300px] bg-blue-700">
+                           <img src={jeep1} />
+                           </div>
+                           {marker.popUp}
+
+                       </Popup>
 
 
 
-                <Marker longitude={endPoint[0]} latitude={endPoint[1]} anchor="bottom"   onClick={
-                    ()=>{
-                        goToMarkerLocation(endPoint[0],endPoint[1])
 
-                    }}>
-                    <div className="flex  items-center justify-center w-9 h-9 p-2   rounded-full">
-                        <img src={jeep} className=""/>
 
-                    </div>
-                </Marker>
 
-                {popupInfo && (
-                    <Popup
-                        longitude={popupInfo.lng}
-                        latitude={popupInfo.lat}
-                        anchor="top"
-                        closeOnClick={false}
-                        onClose={() => setPopupInfo(null)}
-                    >
+                   </Marker>
+               ))}
 
-                            <div>{popupInfo.description}</div>
 
-                    </Popup>
-                )}
-                <div className="absolute h-auto rounded-t-[1.5rem] bg-white z-[10000] bottom-0 gap-2 flex flex-col w-full p-2 px-2">
-                   <div className="w-full bg-white shadow-sm h-auto rounded-lg p-5 flex place-items-center px-5">
-                       <img src={jeep} className="h-7  w-7 opacity-80"/>
+               <LocationMarker/>
 
-                   </div>
-                    <div className="w-full bg-white shadow-sm h-auto rounded-lg p-5 flex place-items-center px-5">
-                        <img src={jeep} className="h-7  w-7 opacity-80"/>
+               {/*<RoutingMachine/>*/}
+           </MarkerClusterGroup>
 
-                    </div>  <div className="w-full bg-white shadow-sm h-auto rounded-lg p-5 flex place-items-center px-5">
-                    <img src={jeep} className="h-7  w-7 opacity-80"/>
 
-                </div>
-                </div>
-            </Map>
-        </div>
-    );
+           <div className="absolute h-auto rounded-t-[1.5rem] bg-white z-[10000] bottom-0 gap-2 flex flex-col w-full p-2 px-2">
+               <GotoJeeplocation coordinates={[16.899876727154616, 120.51759851277455]} />
+               <GotoJeeplocation coordinates={[16.899876727154616, 120.51759851277455]} />
+               <GotoJeeplocation coordinates={[16.899876727154616, 120.51759851277455]} />
+
+
+           </div>
+
+
+
+       </MapContainer>
+
+
+   </div>    );
 }
-
-export default App;
