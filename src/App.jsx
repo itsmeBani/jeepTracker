@@ -67,14 +67,26 @@ export default function App() {
         const map = useMap();
 
         useEffect(() => {
+            const handlePositionUpdate = (e) => {
+                const { latitude, longitude } = e.coords;
+                const newLatLng = { lat: latitude, lng: longitude };
+                setPosition(newLatLng);
+                map.flyTo(newLatLng, map.getZoom());
+            };
 
-            map.locate().on("locationfound", function (e) {
-                setPosition(e.latlng);
-                console.log(e.latlng)
-                // map.flyTo(e.latlng, map.getZoom());
-                const radius = e.accuracy;
+            const handleError = (error) => {
+                console.error("Geolocation error:", error);
+            };
 
+            const watchId = navigator.geolocation.watchPosition(handlePositionUpdate, handleError, {
+                enableHighAccuracy: true,
+                timeout: 5000,
+                maximumAge: 0,
             });
+
+            return () => {
+                navigator.geolocation.clearWatch(watchId);
+            };
         }, [map]);
 
         return position === null ? null : (
@@ -99,8 +111,8 @@ export default function App() {
 
        >
            {/* OPEN STREEN MAPS TILES */}
-           <LayersControl position="topleft">
-               <LayersControl.BaseLayer checked name="Google Maps">
+           <LayersControl position="topleft" >
+               <LayersControl.BaseLayer checked name="Google Maps"  >
                    <TileLayer
                        attribution="Google Maps"
                        url="http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}"
@@ -108,7 +120,7 @@ export default function App() {
                        subdomains={["mt0", "mt1", "mt2", "mt3"]}
                    />
                </LayersControl.BaseLayer>
-               <LayersControl.BaseLayer checked name="Satellite">
+               <LayersControl.BaseLayer  name="Satellite">
                    <TileLayer
                        attribution="Satellite   "
                        url="http://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}"
@@ -121,16 +133,12 @@ export default function App() {
 
            <TileLayer
                attribution="Google Maps"
-               // url="http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}" // regular
-
-               url="http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}"
-               // url="http://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}" // satellite
-               //  url="http://{s}.google.com/vt/lyrs=p&x={x}&y={y}&z={z}" // terrain
+               url="http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}" // regular
                maxZoom={20}
-
                subdomains={["mt0", "mt1", "mt2", "mt3"]}
+               tileSize={11512}  // Set the tile size to 512 for high resolution
+               zoomOffset={-1} // Adjust the zoom offset to account for the larger tile size
            />
-
            <MarkerClusterGroup
 
                chunkedLoading
@@ -165,7 +173,7 @@ export default function App() {
 
 
            <div className="absolute h-auto rounded-t-[1.5rem] bg-white z-[10000] bottom-0 gap-2 flex flex-col w-full p-2 px-2">
-               <GotoJeeplocation coordinates={[16.899876727154616, 120.51759851277455]} />
+               <GotoJeeplocation coordinates={[16.899511098191375, 120.51790988579272]} />
                <GotoJeeplocation coordinates={[16.899876727154616, 120.51759851277455]} />
                <GotoJeeplocation coordinates={[16.899876727154616, 120.51759851277455]} />
 

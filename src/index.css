@@ -15,16 +15,18 @@
 }
 .leaflet-popup-content-wrapper {
     border-radius: 8px;
+
+z-index: 1000;
 }
 .leaflet-touch .leaflet-control-layers-toggle{
     width: 30px;
     height: 30px;
-
+    z-index: -1;
 }
 .leaflet-touch .leaflet-control-layers, .leaflet-touch .leaflet-bar{
 
     background: white;
-    padding: 10px;
+z-index: -1;
 }
 .glowing-route {
     filter: drop-shadow(0 0 5px #bacdff);
