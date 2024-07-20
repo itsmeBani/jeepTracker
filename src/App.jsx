@@ -71,7 +71,7 @@ export default function App() {
                 const { latitude, longitude } = e.coords;
                 const newLatLng = { lat: latitude, lng: longitude };
                 setPosition(newLatLng);
-                map.flyTo(newLatLng, map.getZoom());
+                // map.flyTo(newLatLng, map.getZoom());
             };
 
             const handleError = (error) => {
@@ -80,7 +80,7 @@ export default function App() {
 
             const watchId = navigator.geolocation.watchPosition(handlePositionUpdate, handleError, {
                 enableHighAccuracy: true,
-                timeout: 5000,
+                timeout: 10000,
                 maximumAge: 0,
             });
 
@@ -166,7 +166,7 @@ export default function App() {
 
                <LocationMarker/>
 
-               {/*<RoutingMachine/>*/}
+               <RoutingMachine/>
            </MarkerClusterGroup>
 
 
