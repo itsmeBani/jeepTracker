@@ -80,7 +80,7 @@ export default function App() {
 
             const watchId = navigator.geolocation.watchPosition(handlePositionUpdate, handleError, {
                 enableHighAccuracy: true,
-                timeout: 10000,
+                timeout: 50000,
                 maximumAge: 0,
             });
 
@@ -159,7 +159,7 @@ export default function App() {
 
                <LocationMarker/>
 
-               <RoutingMachine/>
+               {/*<RoutingMachine/>*/}
            </MarkerClusterGroup>
 
 
