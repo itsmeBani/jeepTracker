@@ -114,12 +114,24 @@ export default function App() {
                <LayersControl.BaseLayer checked name="Google Maps"  >
                    <TileLayer
                        attribution="Google Maps"
-                       // url="http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}"
-                       url="https://api.maptiler.com/maps/jp-mierune-streets/{z}/{x}/{y}.png?key=3rAPapsQl0WHV7XcyCSi"
+                       url="http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}"
+                       // url="https://api.maptiler.com/maps/jp-mierune-streets/{z}/{x}/{y}.png?key=3rAPapsQl0WHV7XcyCSi"
                        maxZoom={20}
-
+                       // c3a16d92c99042d1b87a3e2a1a782952
                        subdomains={["mt0", "mt1", "mt2", "mt3"]}
                    />
+
+                   {/*<TileLayer*/}
+                   {/*    url="https://maps.geoapify.com/v1/tile/osm-bright/{z}/{x}/{y}@2x.png?apiKey=c3a16d92c99042d1b87a3e2a1a782952"*/}
+                   {/*    attribution='Powered by <a href="https://www.geoapify.com/" target="_blank">Geoapify</a> | <a href="https://openmaptiles.org/" target="_blank">© OpenMapTiles</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">© OpenStreetMap</a>'*/}
+                   {/*apiKey='c3a16d92c99042d1b87a3e2a1a782952'*/}
+                   {/*    maxZoom={20}*/}
+                   {/*id= 'osm-bright'*/}
+                   {/*/>*/}
+
+
+
+
                </LayersControl.BaseLayer>
                <LayersControl.BaseLayer  name="Satellite">
                    <TileLayer
