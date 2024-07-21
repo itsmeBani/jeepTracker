@@ -3,7 +3,6 @@ import {MapContainer, TileLayer, Marker, Popup, Polyline,useMapEvents , useMap,L
 import MarkerClusterGroup from "react-leaflet-cluster";
 
 import {Icon, divIcon, point} from "leaflet";
-import RoutingMachine from "./Components/Routing.jsx";
 import jeep1 from "../src/assets/449809310_443755698627655_2173414877061037872_n.jpg"
 import jeep from "../src/assets/truck-front.svg"
 import {useEffect, useRef, useState} from "react";
@@ -23,7 +22,7 @@ const createClusterCustomIcon = function (cluster) {
         iconSize: point(44, 44, true)
     });
 };
-
+console.log(L)
 // markers
 const markers = [
     {
@@ -115,8 +114,10 @@ export default function App() {
                <LayersControl.BaseLayer checked name="Google Maps"  >
                    <TileLayer
                        attribution="Google Maps"
-                       url="http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}"
+                       // url="http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}"
+                       url="https://api.maptiler.com/maps/jp-mierune-streets/{z}/{x}/{y}.png?key=3rAPapsQl0WHV7XcyCSi"
                        maxZoom={20}
+
                        subdomains={["mt0", "mt1", "mt2", "mt3"]}
                    />
                </LayersControl.BaseLayer>
