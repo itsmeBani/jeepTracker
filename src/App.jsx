@@ -106,7 +106,7 @@ export default function App() {
     return (
    <div className="flex">
        <MapContainer center={[16.899876727154616, 120.51759851277455
-       ]} zoom={18} className="w-full h-[100dvh]"
+       ]} zoom={18}  minZoom={6}  maxZoom={20}className="w-full h-[100dvh]"
 
 
        >
