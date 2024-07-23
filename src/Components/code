@@ -177,3 +177,38 @@
 // }
 //
 // export default App;
+import React, { useEffect } from 'react';
+import L from 'leaflet';
+import 'leaflet/dist/leaflet.css';
+import '@maptiler/leaflet-maptilersdk';
+
+function App(props) {
+    useEffect(() => {
+        // Initialize the map and layer when the component mounts
+        const map = L.map('map', {
+            center: L.latLng(49.2125578, 16.62662018),
+            zoom: 14,
+        });
+
+        const mtLayer = new L.MaptilerLayer({
+            // Get your free API key at https://cloud.maptiler.com
+            apiKey: "3rAPapsQl0WHV7XcyCSi",
+        }).addTo(map);
+
+        // Cleanup function to remove the map when the component unmounts
+        return () => {
+            map.remove();
+        };
+    }, []);
+
+    return (
+        <div id="map" style={{ height: '100vh' }}>
+
+
+
+
+        </div>
+    );
+}
+
+export default App;
